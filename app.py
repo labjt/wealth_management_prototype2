@@ -1,5 +1,15 @@
 import streamlit as st
+import pandas as pd
 import matplotlib.pyplot as plt
+
+# Load the Excel file
+excel_file = 'matrix-usd.xlsx'
+xl = pd.ExcelFile(excel_file)
+
+# Load the sheets into DataFrames
+returns_df = xl.parse('Expected Returns')
+volatilities_df = xl.parse('Volatilities')
+correlations_df = xl.parse('Correlations')
 
 st.title("Goals-Based Wealth Management Prototype - Brunel's Model")
 
@@ -173,8 +183,68 @@ st.pyplot(fig)
 # Divider
 st.markdown("---")
 
+# Disclaimer
+st.header("Disclaimer")
+st.write("This software is for demonstration purposes only. It does not guarantee any results. Please consult with a financial advisor before making any investment decisions.")
+
 # Placeholder for future chapters and features
-# ...
+st.markdown("---")
+
+# Chapter 5: Portfolio Construction
+st.header("Portfolio Construction")
+
+st.write("""
+Portfolio construction involves creating a diversified portfolio that aligns with your financial goals, risk tolerance, and risk capacity. Using the expected returns, volatilities, and correlations from the provided data, we can construct an efficient portfolio.
+""")
+
+# Display the Expected Returns, Volatilities, and Correlations
+st.subheader("Expected Returns")
+st.dataframe(returns_df)
+
+st.subheader("Volatilities")
+st.dataframe(volatilities_df)
+
+st.subheader("Correlations")
+st.dataframe(correlations_df)
+
+# Constructing the Portfolio
+st.subheader("Construct Your Portfolio")
+
+asset_classes = returns_df.columns.tolist()
+
+portfolio_allocation = {}
+for asset_class in asset_classes:
+    portfolio_allocation[asset_class] = st.slider(f"{asset_class} Allocation (%)", min_value=0, max_value=100, step=1, key=f"portfolio_{asset_class}")
+
+# Display the portfolio allocation
+st.write("### Portfolio Allocation")
+st.write(portfolio_allocation)
+
+# Ensure the sum of allocations is 100%
+total_allocation = sum(portfolio_allocation.values())
+if total_allocation != 100:
+    st.warning("The total allocation must sum up to 100%. Please adjust the allocations.")
+else:
+    st.success("The total allocation is 100%.")
+
+# Calculate the expected return and volatility of the portfolio
+portfolio_return = sum([portfolio_allocation[asset] * returns_df.loc[0, asset] / 100 for asset in asset_classes])
+portfolio_volatility = sum([portfolio_allocation[asset] * volatilities_df.loc[0, asset] / 100 for asset in asset_classes])
+
+st.write(f"### Expected Portfolio Return: {portfolio_return:.2f}%")
+st.write(f"### Expected Portfolio Volatility: {portfolio_volatility:.2f}%")
+
+# Calculate the portfolio variance
+correlation_matrix = correlations_df.values
+weights = [portfolio_allocation[asset] / 100 for asset in asset_classes]
+portfolio_variance = sum([weights[i] * weights[j] * volatilities_df.iloc[0, i] * volatilities_df.iloc[0, j] * correlation_matrix[i, j] for i in range(len(weights)) for j in range(len(weights))])
+
+st.write(f"### Expected Portfolio Variance: {portfolio_variance:.2f}")
+
+# Divider
+st.markdown("---")
+
+# Placeholder for future chapters and features
 
 # Disclaimer
 st.header("Disclaimer")
