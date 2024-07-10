@@ -183,7 +183,8 @@ st.pyplot(fig)
 st.markdown("---")
 
 # Chapter 5: Portfolio Construction
-st.header("Portfolio Construction
+st.header("Portfolio Construction")
+
 Portfolio construction involves creating a diversified portfolio that aligns with your financial goals, risk tolerance, and risk capacity. Using the expected returns, volatilities, and correlations from the provided data, we can construct an efficient portfolio.
 """)
 
