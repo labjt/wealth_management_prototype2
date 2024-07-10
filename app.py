@@ -24,9 +24,9 @@ client_name = st.text_input("Client Name")
 client_age = st.number_input("Client Age", min_value=18)
 financial_goals = st.text_area("Financial Goals")
 
-current_assets = st.number_input("Current Assets ($)", min_value=0)
-annual_income = st.number_input("Annual Income ($)", min_value=0)
-annual_expenses = st.number_input("Annual Expenses ($)", min_value=0)
+current_assets = st.number_input("Current Assets ($)", min_value=0, key="current_assets")
+annual_income = st.number_input("Annual Income ($)", min_value=0, key="annual_income")
+annual_expenses = st.number_input("Annual Expenses ($)", min_value=0, key="annual_expenses")
 
 # Divider
 st.markdown("---")
@@ -56,11 +56,11 @@ num_goals = st.number_input("Number of Goals", min_value=1, max_value=10, step=1
 goals = []
 for i in range(num_goals):
     st.subheader(f"Goal {i+1}")
-    goal_name = st.text_input(f"Goal {i+1} Name")
-    goal_amount = st.number_input(f"Goal {i+1} Amount ($)", min_value=0)
-    goal_horizon = st.number_input(f"Goal {i+1} Time Horizon (years)", min_value=0)
-    goal_type = st.selectbox(f"Goal {i+1} Type", ["Lifestyle", "Aspirational", "Legacy"])
-    goal_priority = st.selectbox(f"Goal {i+1} Priority", ["High", "Medium", "Low"])
+    goal_name = st.text_input(f"Goal {i+1} Name", key=f"goal_name_{i}")
+    goal_amount = st.number_input(f"Goal {i+1} Amount ($)", min_value=0, key=f"goal_amount_{i}")
+    goal_horizon = st.number_input(f"Goal {i+1} Time Horizon (years)", min_value=0, key=f"goal_horizon_{i}")
+    goal_type = st.selectbox(f"Goal {i+1} Type", ["Lifestyle", "Aspirational", "Legacy"], key=f"goal_type_{i}")
+    goal_priority = st.selectbox(f"Goal {i+1} Priority", ["High", "Medium", "Low"], key=f"goal_priority_{i}")
     goals.append({"name": goal_name, "amount": goal_amount, "horizon": goal_horizon, "type": goal_type, "priority": goal_priority})
 
 # Goal Summary Section
@@ -95,17 +95,17 @@ risk_tolerance_questions = [
 ]
 
 risk_tolerance_responses = []
-for question in risk_tolerance_questions:
-    response = st.radio(question, options=["Very Uncomfortable", "Uncomfortable", "Neutral", "Comfortable", "Very Comfortable"])
+for i, question in enumerate(risk_tolerance_questions):
+    response = st.radio(question, options=["Very Uncomfortable", "Uncomfortable", "Neutral", "Comfortable", "Very Comfortable"], key=f"risk_tolerance_{i}")
     risk_tolerance_responses.append(response)
 
 # Risk Capacity Assessment
 st.subheader("Risk Capacity Assessment")
 
-income = st.number_input("Annual Income ($)", min_value=0)
-net_worth = st.number_input("Net Worth ($)", min_value=0)
-investment_horizon = st.number_input("Investment Horizon (years)", min_value=0)
-liquidity_needs = st.radio("Liquidity Needs", options=["Low", "Medium", "High"])
+income = st.number_input("Annual Income ($)", min_value=0, key="risk_capacity_income")
+net_worth = st.number_input("Net Worth ($)", min_value=0, key="risk_capacity_net_worth")
+investment_horizon = st.number_input("Investment Horizon (years)", min_value=0, key="risk_capacity_horizon")
+liquidity_needs = st.radio("Liquidity Needs", options=["Low", "Medium", "High"], key="risk_capacity_liquidity")
 
 # Placeholder for risk capacity calculations (detailed formulas and calculations would be added here)
 risk_capacity_score = (income + net_worth) / (investment_horizon + 1)  # Simplified example calculation
