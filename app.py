@@ -38,6 +38,19 @@ st.write("""
 In goals-based wealth management, setting clear and specific financial goals is crucial. Goals are typically categorized into three types: Lifestyle, Aspirational, and Legacy. Each goal should have a specific amount, time horizon, and priority.
 """)
 
+# Examples of Goals Table
+st.write("""
+### Examples of Goals:
+| Category      | Example Goal         | Amount Required | Time Horizon | Priority |
+|---------------|----------------------|-----------------|--------------|----------|
+| Lifestyle     | Retirement Income    | $1,000,000      | 20 years     | High     |
+| Lifestyle     | Daily Living Expenses| $50,000/year    | Ongoing      | High     |
+| Aspirational  | Vacation Home        | $500,000        | 10 years     | Medium   |
+| Aspirational  | Luxury Car           | $100,000        | 5 years      | Low      |
+| Legacy        | Estate Planning      | $2,000,000      | 30 years     | High     |
+| Legacy        | Charitable Giving    | $250,000        | 15 years     | Medium   |
+""")
+
 num_goals = st.number_input("Number of Goals", min_value=1, max_value=10, step=1)
 
 goals = []
