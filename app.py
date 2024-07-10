@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Manually input the data
 expected_returns = {
@@ -349,6 +352,93 @@ if need_rebalance:
     st.warning("The portfolio needs rebalancing. Some asset classes deviate from the target allocation by more than the threshold.")
 else:
     st.success("The portfolio is within the acceptable deviation range and does not need rebalancing.")
+
+# Divider
+st.markdown("---")
+
+# Chapter 8: Communication and Reporting
+st.header("Communication and Reporting")
+
+st.write("""
+Effective communication and comprehensive reporting are essential for maintaining client trust and satisfaction. This section provides tools to generate reports and communicate portfolio performance and changes to the client.
+""")
+
+# Generate Comprehensive Reports
+st.subheader("Generate Comprehensive Reports")
+
+report_sections = {
+    "Client Information": {
+        "Client Name": client_name,
+        "Client Age": client_age,
+        "Financial Goals": financial_goals,
+        "Current Assets": current_assets,
+        "Annual Income": annual_income,
+        "Annual Expenses": annual_expenses
+    },
+    "Goals": goals,
+    "Risk Profile": {
+        "Risk Tolerance Score": risk_tolerance_score,
+        "Risk Capacity Score": risk_capacity_score
+    },
+    "Strategic Asset Allocation": strategic_allocation,
+    "Tactical Asset Allocation": tactical_allocation,
+     "Portfolio Performance": cumulative_returns,
+    "Rebalancing": {
+        "Rebalance Threshold": rebalance_threshold,
+        "Deviations": deviations,
+        "Need Rebalance": need_rebalance
+    }
+}
+
+# Display the report
+st.write("### Comprehensive Report")
+for section, content in report_sections.items():
+    st.subheader(section)
+    if isinstance(content, pd.DataFrame) or isinstance(content, np.ndarray):
+        st.line_chart(content)
+    else:
+        st.write(content)
+
+# Allow downloading the report as a text file
+report_text = ""
+for section, content in report_sections.items():
+    report_text += f"{section}\n"
+    for key, value in content.items() if isinstance(content, dict) else enumerate(content):
+        report_text += f"{key}: {value}\n"
+    report_text += "\n"
+
+st.download_button(label="Download Report as Text File", data=report_text, file_name="comprehensive_report.txt")
+
+# Communication with Clients
+st.subheader("Communication with Clients")
+
+st.write("Send the comprehensive report to the client via email:")
+
+client_email = st.text_input("Client Email")
+advisor_email = st.text_input("Your Email")
+advisor_email_password = st.text_input("Your Email Password", type="password")
+
+if st.button("Send Report"):
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = advisor_email
+        msg['To'] = client_email
+        msg['Subject'] = "Comprehensive Portfolio Report"
+        body = f"Dear {client_name},\n\nPlease find attached your comprehensive portfolio report.\n\nBest regards,\nYour Advisor"
+        msg.attach(MIMEText(body, 'plain'))
+        attachment = MIMEText(report_text)
+        attachment.add_header('Content-Disposition', 'attachment', filename="comprehensive_report.txt")
+        msg.attach(attachment)
+        
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(advisor_email, advisor_email_password)
+        text = msg.as_string()
+        server.sendmail(advisor_email, client_email, text)
+        server.quit()
+        st.success(f"Report sent to {client_email} successfully!")
+    except Exception as e:
+        st.error(f"Failed to send the report: {e}")
 
 # Divider
 st.markdown("---")
