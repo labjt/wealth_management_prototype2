@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Manually input the data
 expected_returns = {
@@ -313,6 +314,41 @@ for section, content in ips_sections.items():
     ips_text += "\n"
 
 st.download_button(label="Download IPS as Text File", data=ips_text, file_name="investment_policy_statement.txt")
+
+# Divider
+st.markdown("---")
+
+# Chapter 7: Monitoring and Rebalancing
+st.header("Monitoring and Rebalancing")
+
+st.write("""
+Monitoring the portfolio's performance and rebalancing as necessary is critical to maintaining the desired asset allocation and achieving the client's goals. This section provides tools to monitor the portfolio and perform rebalancing.
+""")
+
+# Placeholder for portfolio performance monitoring (e.g., historical performance, tracking error)
+st.subheader("Portfolio Performance Monitoring")
+
+# Example: Simulate historical performance (replace with actual performance data)
+np.random.seed(42)
+historical_returns = np.random.normal(portfolio_return / 12, portfolio_volatility / np.sqrt(12), 120)  # Simulate 10 years of monthly returns
+cumulative_returns = (1 + historical_returns).cumprod() - 1
+
+st.line_chart(cumulative_returns)
+
+# Rebalancing
+st.subheader("Rebalancing the Portfolio")
+
+rebalance_threshold = st.slider("Rebalance Threshold (%)", min_value=1, max_value=10, value=5, step=1, key="rebalance_threshold")
+
+# Placeholder for rebalancing logic (e.g., check if current allocation deviates from target allocation by the threshold)
+# This example assumes a simple check for demonstration purposes
+deviations = {asset: abs(tactical_allocation[asset] - strategic_allocation[asset]) for asset in asset_classes}
+need_rebalance = any(dev > rebalance_threshold for dev in deviations.values())
+
+if need_rebalance:
+    st.warning("The portfolio needs rebalancing. Some asset classes deviate from the target allocation by more than the threshold.")
+else:
+    st.success("The portfolio is within the acceptable deviation range and does not need rebalancing.")
 
 # Divider
 st.markdown("---")
