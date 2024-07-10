@@ -149,15 +149,6 @@ st.write("""
 Based on your risk tolerance and capacity assessments, here is a summary of your risk profile and recommendations:
 """)
 
-risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses]) 
-
-# Combined Risk Profile Summary
-st.header("Combined Risk Profile Summary")
-
-st.write("""
-Based on your risk tolerance and capacity assessments, here is a summary of your risk profile and recommendations:
-""")
-
 risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses])  # Simplified example calculation
 st.write(f"Risk Tolerance Score: {risk_tolerance_score}")
 st.write(f"Risk Capacity Score: {risk_capacity_score}")
@@ -271,6 +262,62 @@ st.write(f"### Expected Portfolio Variance: {portfolio_variance:.2f}")
 # Divider
 st.markdown("---")
 
+# Chapter 6: Implementing the Investment Strategy
+st.header("Implementing the Investment Strategy")
+
+st.write("""
+Implementing the investment strategy involves putting the constructed portfolio into action. This includes monitoring the portfolio, rebalancing as needed, and making adjustments based on changes in the client's goals or market conditions.
+""")
+
+# Create Investment Policy Statement (IPS)
+st.subheader("Investment Policy Statement (IPS)")
+
+st.write("Generate the Investment Policy Statement based on the input data:")
+
+# Define IPS sections
+ips_sections = {
+    "Client Information": {
+        "Client Name": client_name,
+        "Client Age": client_age,
+        "Financial Goals": financial_goals,
+        "Current Assets": current_assets,
+        "Annual Income": annual_income,
+        "Annual Expenses": annual_expenses
+    },
+    "Goals": goals,
+    "Risk Profile": {
+        "Risk Tolerance Score": risk_tolerance_score,
+        "Risk Capacity Score": risk_capacity_score
+    },
+    "Strategic Asset Allocation": strategic_allocation,
+    "Tactical Asset Allocation": tactical_allocation,
+    "Expected Portfolio Return": portfolio_return,
+    "Expected Portfolio Volatility": portfolio_volatility,
+    "Expected Portfolio Variance": portfolio_variance
+}
+
+# Display the IPS
+st.write("### Investment Policy Statement")
+for section, content in ips_sections.items():
+    st.subheader(section)
+    st.write(content)
+
+# Allow downloading the IPS as a text file
+import io
+
+ips_text = ""
+for section, content in ips_sections.items():
+    ips_text += f"{section}\n"
+    for key, value in content.items() if isinstance(content, dict) else enumerate(content):
+        ips_text += f"{key}: {value}\n"
+    ips_text += "\n"
+
+st.download_button(label="Download IPS as Text File", data=ips_text, file_name="investment_policy_statement.txt")
+
+# Divider
+st.markdown("---")
+
 # Disclaimer
 st.header("Disclaimer")
 st.write("This software is for demonstration purposes only. It does not guarantee any results. Please consult with a financial advisor before making any investment decisions.")
+
