@@ -31,8 +31,13 @@ annual_expenses = st.number_input("Annual Expenses ($)", min_value=0)
 # Divider
 st.markdown("---")
 
-# Goal Categories
-st.header("Goal Categories")
+# Chapter 2: Setting Goals
+st.header("Setting Financial Goals")
+
+st.write("""
+In goals-based wealth management, setting clear and specific financial goals is crucial. Goals are typically categorized into three types: Lifestyle, Aspirational, and Legacy. Each goal should have a specific amount, time horizon, and priority.
+""")
+
 num_goals = st.number_input("Number of Goals", min_value=1, max_value=10, step=1)
 
 goals = []
@@ -42,60 +47,24 @@ for i in range(num_goals):
     goal_amount = st.number_input(f"Goal {i+1} Amount ($)", min_value=0)
     goal_horizon = st.number_input(f"Goal {i+1} Time Horizon (years)", min_value=0)
     goal_type = st.selectbox(f"Goal {i+1} Type", ["Lifestyle", "Aspirational", "Legacy"])
-    goals.append({"name": goal_name, "amount": goal_amount, "horizon": goal_horizon, "type": goal_type})
+    goal_priority = st.selectbox(f"Goal {i+1} Priority", ["High", "Medium", "Low"])
+    goals.append({"name": goal_name, "amount": goal_amount, "horizon": goal_horizon, "type": goal_type, "priority": goal_priority})
+
+# Goal Summary Section
+st.header("Goal Summary")
+for goal in goals:
+    st.subheader(f"Goal: {goal['name']}")
+    st.write(f"Amount: ${goal['amount']:,.2f}")
+    st.write(f"Time Horizon: {goal['horizon']} years")
+    st.write(f"Type: {goal['type']}")
+    st.write(f"Priority: {goal['priority']}")
+    st.markdown("---")
 
 # Divider
 st.markdown("---")
 
-# Generate Portfolio
-if st.button("Generate Portfolio"):
-    st.session_state.allocations = allocate_portfolio(goals)
-    st.subheader("Goal Allocations")
-    total_allocation = {"Cash": 0, "Bonds": 0, "Stocks": 0}
-
-    for allocation in st.session_state.allocations:
-        st.write(f"Goal: {allocation['Goal']}")
-        st.write(f"Type: {allocation['Type']}")
-        st.write(f"Allocation: {allocation['Allocation']}")
-        st.write("---")
-        for asset_class, percentage in allocation['Allocation'].items():
-            total_allocation[asset_class] += percentage
-
-    st.subheader("Total Portfolio Allocation")
-    total_percentage = sum(total_allocation.values())
-    for asset_class, percentage in total_allocation.items():
-        st.write(f"{asset_class}: {percentage / total_percentage * 100:.2f}%")
-
-    st.success("Portfolio generated successfully!")
-
-# Divider
-st.markdown("---")
-
-# Display Aggregated Portfolio
-st.header("Aggregated Portfolio View")
-st.write("This feature will display the aggregated portfolio across multiple accounts.")
-
-# Generate Investment Policy Statement (IPS)
-if st.button("Generate IPS"):
-    if st.session_state.allocations:
-        ips = f"# Investment Policy Statement\n\n"
-        ips += f"## Client Name: {client_name}\n"
-        ips += f"## Client Age: {client_age}\n"
-        ips += f"## Financial Goals: {financial_goals}\n\n"
-        ips += f"## Account Types:\n"
-        for account in accounts:
-            ips += f"- {account[0]} ({account[1]}): ${account[2]}\n"
-        ips += f"\n## Goal Allocations:\n"
-        for allocation in st.session_state.allocations:
-            ips += f"- Goal: {allocation['Goal']}, Type: {allocation['Type']}, Allocation: {allocation['Allocation']}\n"
-
-        st.download_button(label="Download IPS", data=ips, file_name="investment_policy_statement.md", mime="text/markdown")
-        st.success("Investment Policy Statement generated successfully!")
-    else:
-        st.error("Please generate the portfolio before creating the IPS.")
-
-# Divider
-st.markdown("---")
+# Placeholder for future chapters and features
+# ...
 
 # Disclaimer
 st.header("Disclaimer")
