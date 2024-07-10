@@ -134,7 +134,6 @@ st.write(f"Risk Capacity Score: {risk_capacity_score}")
 
 # Divider
 st.markdown("---")
-
 # Chapter 4: Asset Allocation Strategies
 st.header("Asset Allocation Strategies")
 
@@ -183,17 +182,8 @@ st.pyplot(fig)
 # Divider
 st.markdown("---")
 
-# Disclaimer
-st.header("Disclaimer")
-st.write("This software is for demonstration purposes only. It does not guarantee any results. Please consult with a financial advisor before making any investment decisions.")
-
-# Placeholder for future chapters and features
-st.markdown("---")
-
 # Chapter 5: Portfolio Construction
-st.header("Portfolio Construction")
-
-st.write("""
+st.header("Portfolio Construction
 Portfolio construction involves creating a diversified portfolio that aligns with your financial goals, risk tolerance, and risk capacity. Using the expected returns, volatilities, and correlations from the provided data, we can construct an efficient portfolio.
 """)
 
