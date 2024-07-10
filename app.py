@@ -76,6 +76,54 @@ for goal in goals:
 # Divider
 st.markdown("---")
 
+# Chapter 3: Risk Tolerance and Capacity
+st.header("Risk Tolerance and Capacity")
+
+st.write("""
+Risk tolerance is a measure of how much risk you are willing to take, while risk capacity is a measure of how much risk you can financially afford to take. Both factors are crucial in determining the appropriate investment strategy for achieving your financial goals.
+""")
+
+# Risk Tolerance Questionnaire
+st.subheader("Risk Tolerance Questionnaire")
+
+risk_tolerance_questions = [
+    "How would you react if your investment portfolio lost 20% of its value in a short period?",
+    "How much experience do you have with investing in stocks and bonds?",
+    "What is your primary goal for investing?",
+    "How long is your investment horizon?",
+    "How comfortable are you with market fluctuations?"
+]
+
+risk_tolerance_responses = []
+for question in risk_tolerance_questions:
+    response = st.radio(question, options=["Very Uncomfortable", "Uncomfortable", "Neutral", "Comfortable", "Very Comfortable"])
+    risk_tolerance_responses.append(response)
+
+# Risk Capacity Assessment
+st.subheader("Risk Capacity Assessment")
+
+income = st.number_input("Annual Income ($)", min_value=0)
+net_worth = st.number_input("Net Worth ($)", min_value=0)
+investment_horizon = st.number_input("Investment Horizon (years)", min_value=0)
+liquidity_needs = st.radio("Liquidity Needs", options=["Low", "Medium", "High"])
+
+# Placeholder for risk capacity calculations (detailed formulas and calculations would be added here)
+risk_capacity_score = (income + net_worth) / (investment_horizon + 1)  # Simplified example calculation
+
+# Combined Risk Profile Summary
+st.header("Combined Risk Profile Summary")
+
+st.write("""
+Based on your risk tolerance and capacity assessments, here is a summary of your risk profile and recommendations:
+""")
+
+risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses])  # Simplified example calculation
+st.write(f"Risk Tolerance Score: {risk_tolerance_score}")
+st.write(f"Risk Capacity Score: {risk_capacity_score}")
+
+# Divider
+st.markdown("---")
+
 # Placeholder for future chapters and features
 # ...
 
