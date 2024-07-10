@@ -1,4 +1,5 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 
 st.title("Goals-Based Wealth Management Prototype - Brunel's Model")
 
@@ -120,6 +121,54 @@ Based on your risk tolerance and capacity assessments, here is a summary of your
 risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses])  # Simplified example calculation
 st.write(f"Risk Tolerance Score: {risk_tolerance_score}")
 st.write(f"Risk Capacity Score: {risk_capacity_score}")
+
+# Divider
+st.markdown("---")
+
+# Chapter 4: Asset Allocation Strategies
+st.header("Asset Allocation Strategies")
+
+st.write("""
+Asset allocation is a crucial part of the investment process. It involves dividing your investment portfolio among different asset categories, such as stocks, bonds, and cash. The allocation depends on your risk tolerance, risk capacity, and investment goals.
+""")
+
+# Strategic Asset Allocation
+st.subheader("Strategic Asset Allocation")
+
+st.write("Define your target percentages for each asset class in the long term:")
+
+strategic_allocation = {
+    "Stocks": st.slider("Stocks (%)", min_value=0, max_value=100, value=60, step=1, key="strategic_stocks"),
+    "Bonds": st.slider("Bonds (%)", min_value=0, max_value=100, value=30, step=1, key="strategic_bonds"),
+    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=10, step=1, key="strategic_cash")
+}
+
+# Tactical Asset Allocation
+st.subheader("Tactical Asset Allocation")
+
+st.write("Make short-term adjustments to your asset allocation based on current market conditions:")
+
+tactical_allocation = {
+    "Stocks": st.slider("Stocks (%)", min_value=0, max_value=100, value=strategic_allocation["Stocks"], step=1, key="tactical_stocks"),
+    "Bonds": st.slider("Bonds (%)", min_value=0, max_value=100, value=strategic_allocation["Bonds"], step=1, key="tactical_bonds"),
+    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=strategic_allocation["Cash"], step=1, key="tactical_cash")
+}
+
+# Visualization of Asset Allocation
+st.subheader("Visualization of Asset Allocation")
+
+st.write("Compare your strategic and tactical asset allocations:")
+
+# Pie charts for strategic and tactical allocations
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+ax[0].pie(strategic_allocation.values(), labels=strategic_allocation.keys(), autopct='%1.1f%%', startangle=90)
+ax[0].set_title('Strategic Allocation')
+
+ax[1].pie(tactical_allocation.values(), labels=tactical_allocation.keys(), autopct='%1.1f%%', startangle=90)
+ax[1].set_title('Tactical Allocation')
+
+st.pyplot(fig)
 
 # Divider
 st.markdown("---")
