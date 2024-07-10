@@ -2,14 +2,35 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load the Excel file
-excel_file = 'matrix-usd.xlsx'
-xl = pd.ExcelFile(excel_file)
+# Manually input the data
+expected_returns = {
+    "Cash": 1.5,
+    "US Bonds": 2.0,
+    "International Bonds": 2.5,
+    "US Equities": 6.0,
+    "International Equities": 6.5
+}
 
-# Load the sheets into DataFrames
-returns_df = xl.parse('Expected Returns')
-volatilities_df = xl.parse('Volatilities')
-correlations_df = xl.parse('Correlations')
+volatilities = {
+    "Cash": 0.5,
+    "US Bonds": 3.0,
+    "International Bonds": 4.0,
+    "US Equities": 15.0,
+    "International Equities": 16.0
+}
+
+correlations = {
+    "Cash": [1, 0.1, 0.1, 0.0, 0.0],
+    "US Bonds": [0.1, 1, 0.5, 0.2, 0.2],
+    "International Bonds": [0.1, 0.5, 1, 0.2, 0.2],
+    "US Equities": [0.0, 0.2, 0.2, 1, 0.8],
+    "International Equities": [0.0, 0.2, 0.2, 0.8, 1]
+}
+
+# Convert data to DataFrames
+returns_df = pd.DataFrame(list(expected_returns.items()), columns=["Asset Class", "Expected Return"])
+volatilities_df = pd.DataFrame(list(volatilities.items()), columns=["Asset Class", "Volatility"])
+correlations_df = pd.DataFrame(correlations, index=["Cash", "US Bonds", "International Bonds", "US Equities", "International Equities"])
 
 st.title("Goals-Based Wealth Management Prototype - Brunel's Model")
 
@@ -128,12 +149,22 @@ st.write("""
 Based on your risk tolerance and capacity assessments, here is a summary of your risk profile and recommendations:
 """)
 
+risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses]) 
+
+# Combined Risk Profile Summary
+st.header("Combined Risk Profile Summary")
+
+st.write("""
+Based on your risk tolerance and capacity assessments, here is a summary of your risk profile and recommendations:
+""")
+
 risk_tolerance_score = sum([1 if response in ["Very Comfortable", "Comfortable"] else -1 for response in risk_tolerance_responses])  # Simplified example calculation
 st.write(f"Risk Tolerance Score: {risk_tolerance_score}")
 st.write(f"Risk Capacity Score: {risk_capacity_score}")
 
 # Divider
 st.markdown("---")
+
 # Chapter 4: Asset Allocation Strategies
 st.header("Asset Allocation Strategies")
 
@@ -147,9 +178,11 @@ st.subheader("Strategic Asset Allocation")
 st.write("Define your target percentages for each asset class in the long term:")
 
 strategic_allocation = {
-    "Stocks": st.slider("Stocks (%)", min_value=0, max_value=100, value=60, step=1, key="strategic_stocks"),
-    "Bonds": st.slider("Bonds (%)", min_value=0, max_value=100, value=30, step=1, key="strategic_bonds"),
-    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=10, step=1, key="strategic_cash")
+    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=10, step=1, key="strategic_cash"),
+    "US Bonds": st.slider("US Bonds (%)", min_value=0, max_value=100, value=30, step=1, key="strategic_us_bonds"),
+    "International Bonds": st.slider("International Bonds (%)", min_value=0, max_value=100, value=20, step=1, key="strategic_international_bonds"),
+    "US Equities": st.slider("US Equities (%)", min_value=0, max_value=100, value=30, step=1, key="strategic_us_equities"),
+    "International Equities": st.slider("International Equities (%)", min_value=0, max_value=100, value=10, step=1, key="strategic_international_equities")
 }
 
 # Tactical Asset Allocation
@@ -158,9 +191,11 @@ st.subheader("Tactical Asset Allocation")
 st.write("Make short-term adjustments to your asset allocation based on current market conditions:")
 
 tactical_allocation = {
-    "Stocks": st.slider("Stocks (%)", min_value=0, max_value=100, value=strategic_allocation["Stocks"], step=1, key="tactical_stocks"),
-    "Bonds": st.slider("Bonds (%)", min_value=0, max_value=100, value=strategic_allocation["Bonds"], step=1, key="tactical_bonds"),
-    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=strategic_allocation["Cash"], step=1, key="tactical_cash")
+    "Cash": st.slider("Cash (%)", min_value=0, max_value=100, value=strategic_allocation["Cash"], step=1, key="tactical_cash"),
+    "US Bonds": st.slider("US Bonds (%)", min_value=0, max_value=100, value=strategic_allocation["US Bonds"], step=1, key="tactical_us_bonds"),
+    "International Bonds": st.slider("International Bonds (%)", min_value=0, max_value=100, value=strategic_allocation["International Bonds"], step=1, key="tactical_international_bonds"),
+    "US Equities": st.slider("US Equities (%)", min_value=0, max_value=100, value=strategic_allocation["US Equities"], step=1, key="tactical_us_equities"),
+    "International Equities": st.slider("International Equities (%)", min_value=0, max_value=100, value=strategic_allocation["International Equities"], step=1, key="tactical_international_equities")
 }
 
 # Visualization of Asset Allocation
@@ -202,7 +237,7 @@ st.dataframe(correlations_df)
 # Constructing the Portfolio
 st.subheader("Construct Your Portfolio")
 
-asset_classes = returns_df.columns.tolist()
+asset_classes = list(expected_returns.keys())
 
 portfolio_allocation = {}
 for asset_class in asset_classes:
@@ -220,23 +255,21 @@ else:
     st.success("The total allocation is 100%.")
 
 # Calculate the expected return and volatility of the portfolio
-portfolio_return = sum([portfolio_allocation[asset] * returns_df.loc[0, asset] / 100 for asset in asset_classes])
-portfolio_volatility = sum([portfolio_allocation[asset] * volatilities_df.loc[0, asset] / 100 for asset in asset_classes])
+portfolio_return = sum([portfolio_allocation[asset] * expected_returns[asset] / 100 for asset in asset_classes])
+portfolio_volatility = sum([portfolio_allocation[asset] * volatilities[asset] / 100 for asset in asset_classes])
 
 st.write(f"### Expected Portfolio Return: {portfolio_return:.2f}%")
 st.write(f"### Expected Portfolio Volatility: {portfolio_volatility:.2f}%")
 
 # Calculate the portfolio variance
-correlation_matrix = correlations_df.values
+correlation_matrix = pd.DataFrame(correlations).values
 weights = [portfolio_allocation[asset] / 100 for asset in asset_classes]
-portfolio_variance = sum([weights[i] * weights[j] * volatilities_df.iloc[0, i] * volatilities_df.iloc[0, j] * correlation_matrix[i, j] for i in range(len(weights)) for j in range(len(weights))])
+portfolio_variance = sum([weights[i] * weights[j] * volatilities[asset_classes[i]] * volatilities[asset_classes[j]] * correlation_matrix[i, j] / 10000 for i in range(len(weights)) for j in range(len(weights))])
 
 st.write(f"### Expected Portfolio Variance: {portfolio_variance:.2f}")
 
 # Divider
 st.markdown("---")
-
-# Placeholder for future chapters and features
 
 # Disclaimer
 st.header("Disclaimer")
